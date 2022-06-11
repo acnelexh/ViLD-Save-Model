@@ -1,0 +1,8 @@
+__pycache__/
+.vscode/
+data/
+env/
+model.ckpt*
+tmp/
+save_models/*
+*.png
