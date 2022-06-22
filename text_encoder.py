@@ -131,7 +131,7 @@ def build_text_embedding(categories, model, CONFIG):
 def process_label(clip_model, CONFIG):
     with open(CONFIG.label_path) as file:
         category_name_string = file.read()
-
+        
     category_names = [x.strip() for x in category_name_string.split(';')]
     category_names = ['background'] + category_names
     categories = [{'name': item, 'id': idx+1,} for idx, item in enumerate(category_names)]

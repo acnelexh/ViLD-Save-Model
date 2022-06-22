@@ -4,7 +4,7 @@ import numpy as np
 from easydict import EasyDict
 from scipy.special import softmax
 
-from drawing import draw_output
+#from drawing import draw_output
 from text_encoder import process_label
 from visual_encoder import process_image
 
@@ -36,8 +36,11 @@ def main(CONFIG):
     else:
         scores_all = raw_scores
     #################################################################
+    # Convert score to corrsponding json file for evaluation
+    
+    #################################################################
     # Draw output and save
-
+    '''
     draw_output(
         CONFIG,
         category_names = category_names,
@@ -48,12 +51,11 @@ def main(CONFIG):
         scores_all= scores_all,
         detection_roi_scores=detection_roi_scores,
         image_info=image_info)
-    
-
+    '''
 
 if __name__ == "__main__":
     #pdb.set_trace()
-    with open("config/test.yaml", "r") as file:
+    with open("config/demo.yaml", "r") as file:
         CONFIG = yaml.load(file, Loader=yaml.SafeLoader)
         CONFIG = EasyDict(CONFIG)
     main(CONFIG)
