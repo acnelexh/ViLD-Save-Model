@@ -62,7 +62,7 @@ def encode_visual(session, image_path, CONFIG):
     box_sizes = (rescaled_detection_boxes[:, 2] - rescaled_detection_boxes[:, 0]) * (rescaled_detection_boxes[:, 3] - rescaled_detection_boxes[:, 1])
 
     # Filter out invalid rois (nmsed rois)
-    min_rpn_score_thresh = 0
+    min_rpn_score_thresh = 0.9
     min_box_area = 0
     
     valid_indices = np.where(

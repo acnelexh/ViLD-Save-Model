@@ -71,6 +71,7 @@ def main(CONFIG):
     model, _ = clip.load("ViT-B/32")
     if not CONFIG.run_on_gpu:
         model.cpu()
+    #pdb.set_trace()
     category_embedding, id_lookup = encode_text(model, VAL_ANNOTATION_PATH, CONFIG)
     #print(id_lookup)
     #print(category_embedding.shape)
@@ -80,7 +81,8 @@ def main(CONFIG):
     _ = tf.saved_model.loader.load(session, ['serve'], saved_model_dir)
 
     # Get all the filename and id pair
-    get_result(session, category_embedding, id_lookup)
+    #pdb.set_trace()
+    get_result(session, category_embedding, id_lookup, CONFIG)
 
 if __name__ == "__main__":
     #pdb.set_trace()

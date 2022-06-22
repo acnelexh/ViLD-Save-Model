@@ -1,10 +1,12 @@
 prompt_engineering: True
 this_is: True
-temperature: 100.0
-use_softmax: False
-run_on_gpu: False
+temperature: 1.0
+use_softmax: True
+run_on_gpu: True
 saved_model_dir: "save_models/"
 nms_threshold: 0.9
 max_boxes: 1000
 use_softmax: True
 temperature: 100.0
+# add min size and min rpn threshold
+# https://github.com/acnelexh/zero-shot-object-detection/blob/main/models/official/detection/projects/vild/modeling/vild_model.py
