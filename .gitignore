@@ -3,6 +3,7 @@ __pycache__/
 data/
 env/
 model.ckpt*
-tmp/
 save_models/*
-*.png
+.DS_Store
+image_path_v2/*
+tmp/
