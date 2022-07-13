@@ -8,6 +8,7 @@ from pathlib import Path
 from scipy.special import softmax
 import cv2 as cv
 import tensorflow.compat.v1 as tf
+from tqdm import tqdm
 
 #from drawing import draw_output
 from text_encoder import process_label
@@ -16,8 +17,8 @@ from engine import encode_visual, encode_text
 
 import pdb
 
-VAL_IMAGE_PATH = Path("../data/val2017")
-VAL_ANNOTATION_PATH = Path("../data/annotations/instances_val2017.json")
+VAL_IMAGE_PATH = Path("../cocoapi/images/val2017")
+VAL_ANNOTATION_PATH = Path("../cocoapi/annotations/instances_val2017.json")
 
 def get_filename_id_pair(path):
     with open(path) as f:
@@ -32,12 +33,15 @@ def get_result(session, category_embedding, id_lookup, CONFIG):
     temperature = CONFIG.temperature
     # Get filename and corresponding image id
     filename_id_pair = get_filename_id_pair(VAL_ANNOTATION_PATH)
-    output = []
-    for filename, id in filename_id_pair:
-        (detection_roi_scores,
-            detection_boxes,
-            detection_visual_feat,
-            rescaled_detection_boxes) = encode_visual(session, str(VAL_IMAGE_PATH/filename), CONFIG)
+    #encoder.FLOAT_REPR = lambda o: format(o, '.2f')
+    for filename, id in tqdm(filename_id_pair):
+        try:
+            (detection_roi_scores,
+                detection_boxes,
+                detection_visual_feat,
+                rescaled_detection_boxes) = encode_visual(session, str(VAL_IMAGE_PATH/filename), CONFIG)
+        except:
+            print(f'file corruption: {filename}')
         #################################################################
         # Compute detection scores
         raw_scores = detection_visual_feat.dot(category_embedding.T)
@@ -45,24 +49,31 @@ def get_result(session, category_embedding, id_lookup, CONFIG):
             scores_all = softmax(temperature * raw_scores, axis=-1)
         else:     
             scores_all = raw_scores
-        pdb.set_trace()
+        #pdb.set_trace()
         pred_class = np.argmax(scores_all, axis=1)
         pred_box = rescaled_detection_boxes[pred_class!=0]
-        
+        pred_class = pred_class[pred_class != 0]
+        output = []
         for idx, i in enumerate(pred_class):
             if i == 0:
                 continue
+            x1,y1,x2,y2 = [float(x) for x  in pred_box[idx]]
+            x = (x1+x2)/2
+            y = (y1+y2)/2
+            width = x2-x1
+            height = y2-y1
             m_dict = {
                 "image_id": id,
                 "category_id": id_lookup[i],
-                "bbox": [float(x) for x in pred_box[i]],
+                "bbox": [x, y, width, height],
                 "score": float(scores_all[idx][i])
             }
             output.append(m_dict)
-        break
-    with open("test.json", "w") as outfile:
-        json_object = json.dumps(output, indent = 4)
-        outfile.write(json_object)
+        with open(f"result_new/{id}.json", "w") as outfile:
+            json_object = json.dumps(output, indent = 4)
+            outfile.write(json_object)
+        #pdb.set_trace()
+    
 
 
 def main(CONFIG):

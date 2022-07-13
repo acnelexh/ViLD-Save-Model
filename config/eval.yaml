@@ -8,5 +8,11 @@ nms_threshold: 0.9
 max_boxes: 1000
 use_softmax: True
 temperature: 100.0
+# statistic from vild_resnet.yaml
 # add min size and min rpn threshold
 # https://github.com/acnelexh/zero-shot-object-detection/blob/main/models/official/detection/projects/vild/modeling/vild_model.py
+test_rpn_min_size_threshold: 0.0
+test_rpn_nms_threshold: 0.7
+test_rpn_post_nms_top_k: 1000
+test_rpn_pre_nms_top_k: 1000
+test_rpn_score_threshold: 0.0

@@ -6,3 +6,5 @@ model.ckpt*
 tmp/
 save_models/*
 *.png
+result/*
+result_new/
