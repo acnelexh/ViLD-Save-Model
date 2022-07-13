@@ -7,7 +7,7 @@ from scipy.special import softmax
 from drawing import draw_output
 from text_encoder import process_label
 from visual_encoder import process_image
-
+from pathlib import Path
 import pdb
 
 def main(CONFIG):
@@ -41,6 +41,9 @@ def main(CONFIG):
     #################################################################
     # Draw output and save
     # Fix output
+    save_path = Path(CONFIG.save_path)
+    save_path.mkdir(exist_ok=True)
+
     draw_output(
         CONFIG,
         category_names = category_names,

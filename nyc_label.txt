@@ -1,0 +1,1 @@
+yellow taxi;car;white figure pedestrian light;traffic light with green signal;traffic light with red signal;traffic light;no turn sign;rear light;red stop sign;bike;pedetrian;bus;truck;traffic with white signal

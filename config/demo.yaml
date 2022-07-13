@@ -1,5 +1,6 @@
-image_path: "./NYC_1.png"
-label_path: "./label_test.txt"
+image_path: "./Example/traffic_light.png"
+label_path: "./nyc_label.txt"
+save_path: "./10"
 prompt_engineering: True
 this_is: True
 temperature: 100.0

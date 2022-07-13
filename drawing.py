@@ -84,8 +84,7 @@ def draw_output(CONFIG, **kwargs):
         plt.axis('off')
         plt.title('Detected objects and RPN scores')
         plt.show()
-
-    plt.savefig('result.png')
+        plt.savefig(f'{CONFIG.save_path}/result.png')
 
     #################################################################
     # Plot
@@ -145,4 +144,5 @@ def draw_output(CONFIG, **kwargs):
             
             cnt += 1
             # fig.tight_layout()
+        plt.savefig(f"{CONFIG.save_path}/result_{anno_idx}.png")
     print('Detection counts:', cnt)
