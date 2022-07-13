@@ -1,1 +1,1 @@
-taxi;car
+yellow taxi;car;traffic light

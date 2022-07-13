@@ -4,7 +4,7 @@ import numpy as np
 from easydict import EasyDict
 from scipy.special import softmax
 
-#from drawing import draw_output
+from drawing import draw_output
 from text_encoder import process_label
 from visual_encoder import process_image
 
@@ -40,7 +40,7 @@ def main(CONFIG):
     
     #################################################################
     # Draw output and save
-    '''
+    # Fix output
     draw_output(
         CONFIG,
         category_names = category_names,
@@ -51,7 +51,7 @@ def main(CONFIG):
         scores_all= scores_all,
         detection_roi_scores=detection_roi_scores,
         image_info=image_info)
-    '''
+
 
 if __name__ == "__main__":
     #pdb.set_trace()
