@@ -89,7 +89,7 @@ def main(CONFIG):
     # Load in ViLD model
     session = tf.Session(graph=tf.Graph())
     saved_model_dir = CONFIG.saved_model_dir
-    _ = tf.saved_model.loader.load(session, ['serve'], saved_model_dir)
+    _ = tf.savedss_model.loader.load(session, ['serve'], saved_model_dir)
 
     # Get all the filename and id pair
     #pdb.set_trace()

@@ -1,0 +1,9 @@
+car
+bus
+truck
+bike
+bicycle
+sign
+people
+traffic light
+pedestrian light

@@ -1,0 +1,29 @@
+car
+tire
+rear light
+rear tail light
+
+bus
+truck
+yellow taxi
+
+trash can
+
+bike
+bicycle
+
+people
+human
+person
+
+traffic light with no signal
+traffic light with red signal
+traffic light with green signal
+pedestrian light with white signal
+pedestrain light with red hand
+
+flag
+
+street sign
+no turn sign
+red stop sign

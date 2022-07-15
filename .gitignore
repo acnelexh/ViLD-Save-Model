@@ -4,7 +4,7 @@ data/
 env/
 model.ckpt*
 tmp/
-save_models/*
+#save_models/*
 *.png
 result/*
 result_new/

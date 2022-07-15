@@ -1,6 +1,6 @@
-image_path: "./Example/traffic_light.png"
 label_path: "./nyc_label.txt"
-save_path: "./10"
+image_path: "./Example/NYC_3.png"
+save_path: "./demo_result/NYC_3_specific"
 prompt_engineering: True
 this_is: True
 temperature: 100.0
@@ -8,8 +8,8 @@ use_softmax: False
 run_on_gpu: True
 saved_model_dir: "save_models/"
 nms_threshold: 0.5
-min_rpn_score_thresh: 0.9
-min_box_area: 0
-max_boxes_to_draw: 10
+min_rpn_score_thresh: 0.5
+min_box_area: 500
+max_boxes_to_draw: 1000
 use_softmax: False
 temperature: 100.0

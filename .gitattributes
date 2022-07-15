@@ -1,0 +1,2 @@
+save_models/* filter=lfs diff=lfs merge=lfs -text
+save_models/variables/* filter=lfs diff=lfs merge=lfs -text

@@ -1,1 +1,0 @@
-car;bus;truck;bike;bicycle;motorcycle;pedestrian;people;blue road sign;traffic light with green signal;traffic light with red signal;pedestrian light with green figurine;pedestrian light with red figurine;green u turn traffic light;rear light

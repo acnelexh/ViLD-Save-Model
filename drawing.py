@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 from matplotlib import patches
 from matplotlib import pyplot as plt
+from pathlib import Path
 from util import paste_instance_masks, visualize_boxes_and_labels_on_image_array, display_image, plot_mask
 
 # Global matplotlib settings
@@ -42,6 +43,7 @@ def draw_output(CONFIG, **kwargs):
     image_path = CONFIG.image_path
     max_boxes_to_draw = CONFIG.max_boxes_to_draw
     min_rpn_score_thresh = CONFIG.min_rpn_score_thresh
+    image_name = str(Path(CONFIG.image_path).stem)
 
     #################################################################
     # Rank result based on score
@@ -84,7 +86,7 @@ def draw_output(CONFIG, **kwargs):
         plt.axis('off')
         plt.title('Detected objects and RPN scores')
         plt.show()
-        plt.savefig(f'{CONFIG.save_path}/result.png')
+        plt.savefig(f'{CONFIG.save_path}/{image_name}.png')
 
     #################################################################
     # Plot
@@ -144,5 +146,5 @@ def draw_output(CONFIG, **kwargs):
             
             cnt += 1
             # fig.tight_layout()
-        plt.savefig(f"{CONFIG.save_path}/result_{anno_idx}.png")
+        plt.savefig(f"{CONFIG.save_path}/{image_name}_{anno_idx}.png")
     print('Detection counts:', cnt)
