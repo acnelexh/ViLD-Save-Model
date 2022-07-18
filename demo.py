@@ -3,6 +3,7 @@ import yaml
 import numpy as np
 from easydict import EasyDict
 from scipy.special import softmax
+import shutil
 
 from drawing import draw_output
 from text_encoder import process_label
@@ -42,7 +43,10 @@ def main(CONFIG):
     # Draw output and save
     # Fix output
     save_path = Path(CONFIG.save_path)
-    save_path.mkdir(exist_ok=True)
+    if save_path.exists():
+        shutil.rmtree(save_path)
+
+    save_path.mkdir()
 
     draw_output(
         CONFIG,

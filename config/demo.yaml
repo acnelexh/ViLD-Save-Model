@@ -1,15 +1,17 @@
-label_path: "./nyc_label.txt"
-image_path: "./Example/NYC_3.png"
-save_path: "./demo_result/NYC_3_specific"
-prompt_engineering: True
-this_is: True
+image_path: "./Example/SH/SH_2.png" #Path to image
+label_path: "./label/sh_label.txt" #Path to label
+save_path: "./demo_result/SH_2_specific" #Path to save result
+min_box_area: 1200
+#label_path: "./label/nyc_label.txt" #Path to label
+#save_path: "./demo_result/NYC_1_specific" #Path to save result
+prompt_engineering: True #Use prompt engineering
+this_is: True #Use 'this is' in labeling
 temperature: 100.0
 use_softmax: False
 run_on_gpu: True
-saved_model_dir: "save_models/"
-nms_threshold: 0.5
-min_rpn_score_thresh: 0.5
-min_box_area: 500
-max_boxes_to_draw: 1000
+saved_model_dir: "./save_models/" #dir of the saved models
+nms_threshold: 0.4 #nms threshold
+min_rpn_score_thresh: 0.7
+max_boxes_to_draw: 100
 use_softmax: False
 temperature: 100.0

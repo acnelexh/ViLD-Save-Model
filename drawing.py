@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 from matplotlib import patches
 from matplotlib import pyplot as plt
+from PIL import Image
 from pathlib import Path
 from util import paste_instance_masks, visualize_boxes_and_labels_on_image_array, display_image, plot_mask
 
@@ -21,7 +22,7 @@ plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 # Parameters for drawing figure.
 display_input_size = (10, 10)
-overall_fig_size = (18, 24)
+overall_fig_size = (30, 30)
 
 line_thickness = 2
 fig_size_w = 35
@@ -81,14 +82,19 @@ def draw_output(CONFIG, **kwargs):
             skip_scores=False,
             skip_labels=True)
 
+        im = Image.fromarray(image_with_detections)
+        im.save(f'{CONFIG.save_path}/{image_name}.png')
+        #print(image_with_detections)
+        '''
         plt.figure(figsize=overall_fig_size)
         plt.imshow(image_with_detections)
         plt.axis('off')
         plt.title('Detected objects and RPN scores')
-        plt.show()
+        #plt.show()
         plt.savefig(f'{CONFIG.save_path}/{image_name}.png')
-
+        '''
     #################################################################
+    return
     # Plot
     cnt = 0
     raw_image = np.array(image)

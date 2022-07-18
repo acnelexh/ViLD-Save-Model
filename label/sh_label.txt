@@ -2,24 +2,19 @@ car
 tire
 rear tail light
 blue regsitration plate
-
-trash can
 bus
 truck
 bike
 bicycle
 motorcycle
-
 people
 human
 person
-
 traffic light with no signal
 traffic light with red signal
 traffic light with green signal
 pedestrain light with red signal
 pedestrain light with green signal
-
 street sign
 no turn sign
 no bike sign
@@ -27,5 +22,5 @@ red stop sign
 blue road sign
 red no passing sign
 white speed limit sign
-
 red banner
+trash can

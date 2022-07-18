@@ -1,9 +1,5 @@
 car
-bus
-truck
 bike
-bicycle
-sign
 people
+sign
 traffic light
-pedestrian light

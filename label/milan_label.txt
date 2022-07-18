@@ -5,24 +5,23 @@ truck
 trash can
 rear light
 rear tail light
-
 bike
 bicycle
-
+scooter
+people riding scooter
 people
 human
 person
-
 train
+cable car
 rail road
 light rail
-
 traffic light with no signal
 traffic light with red signal
 traffic light with green signal
 pedestrian light with white signal
 pedestrain light with red hand
-
 red stop sign
 street sign
 no turn sign
+building
