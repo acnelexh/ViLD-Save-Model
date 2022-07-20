@@ -1,39 +1,7 @@
 # zero_shot_object_detection
 ### GUI for ViLD, like just a very simple one.
 
-.
-
-├── README.md
-
-├── examples
-
-│  ├── test.jpg
-
-├── icon
-
-│  ├── icons8-assessments-90.png
-
-│  └── icons8-multiplication-90.png
-
-├── image_path_v2
-
-│  ├── saved_model.pb
-
-│  └── variables
-
-│        ├── variables.data-00000-of-00001
-
-│        └── variables.index
-
-├── result
-
-│  └── result_1.jpg
-
-├── tmp
-
-│  ├── ui.jpg
-
-└── vild_ui.ipynb
+.<img src="tmp/image-20220720234057169.png" alt="tmp/image-20220720234057169" style="zoom:50%;" />
 
 To save the memory, README is simple.
 
