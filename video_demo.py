@@ -22,7 +22,7 @@ FLAGS = {
     'this_is': True,
     
     'temperature': 100.0,
-    'use_softmax': False,
+    'use_softmax': True,
 }
 FLAGS = EasyDict(FLAGS)
 
@@ -112,7 +112,7 @@ multiple_templates = [
 
 
 max_boxes_to_draw = 25
-nms_threshold = 0.6
+nms_threshold = 0.3
 min_rpn_score_thresh = 0.9
 min_box_area = 500
 
@@ -278,22 +278,35 @@ def inference(image_path, category_names, text_features):
       scores_all = softmax(FLAGS.temperature * raw_scores, axis=-1)
     else:
       scores_all = raw_scores
+    
+    #################################################################
+    # Filter out wheels
+    wheel_filter = np.argmax(scores_all, axis=1) != 9
+    scores_all = scores_all[wheel_filter]
+    detection_boxes = detection_boxes[wheel_filter]
+    detection_masks = detection_masks[wheel_filter]
+    detection_visual_feat = detection_visual_feat[wheel_filter]
+    rescaled_detection_boxes = rescaled_detection_boxes[wheel_filter]
 
-    indices = np.argsort(-np.max(scores_all, axis=1))  # Results are ranked by scores
-    indices_fg = np.array([i for i in indices if np.argmax(scores_all[i]) != 0])
-
+    # Filter out ladder
+    ladder_filter = np.argmax(scores_all, axis=1) != 10
+    scores_all = scores_all[ladder_filter]
+    detection_boxes = detection_boxes[ladder_filter]
+    detection_masks = detection_masks[ladder_filter]
+    detection_visual_feat = detection_visual_feat[ladder_filter]
+    rescaled_detection_boxes = rescaled_detection_boxes[ladder_filter]
 
     #################################################################
     # Plot detected boxes on the input image.
+    indices = np.argsort(-np.max(scores_all, axis=1))  # Results are ranked by scores
+    indices_fg = np.array([i for i in indices if np.argmax(scores_all[i]) != 0])
+
     ymin, xmin, ymax, xmax = np.split(rescaled_detection_boxes, 4, axis=-1)
-
-
     ######################################
     # MY OWN CODE WILL GO HERE
     img = cv2.imread(image_path,  cv2.COLOR_BGR2RGB)
     if len(indices_fg) == 0:
       print('ViLD does not detect anything belong to the given category')
-
     else:
       boxes = rescaled_detection_boxes[indices_fg]
       n_boxes = boxes.shape[0]
@@ -312,9 +325,9 @@ def inference(image_path, category_names, text_features):
         cv2.putText(img, category_names[np.argmax(scores)], (int(xmin), int(ymin)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
       #cv2.imwrite("test.png", img)
-      return img, image_height, image_width
+    return img, image_height, image_width
 
-image_dir = '/datasets/kitti/scenes/scene_01'
+image_dir = './datasets/kitti/scenes/scene_06'
 img_list = [os.path.join(image_dir, f) for f in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, f))]
 img_list.sort()
 
