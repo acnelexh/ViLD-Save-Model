@@ -10,3 +10,4 @@ result/*
 result_new/
 coco_result/
 *.avi
+datasets/
