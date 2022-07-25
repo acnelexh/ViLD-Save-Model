@@ -1,6 +1,7 @@
-image_path: ./examples/test.jpg
+conf_threshold: 0.7
+image_path: /Users/daynauth/ML/ViLD-Save-Model/examples/test.jpg
 label_path: ./label_test.txt
-max_boxes_to_draw: 7
+max_boxes_to_draw: 100
 min_box_area: 0
 min_rpn_score_thresh: 0.9
 nms_threshold: 0.5
@@ -9,4 +10,4 @@ run_on_gpu: false
 saved_model_dir: ./image_path_v2/
 temperature: 100.0
 this_is: true
-use_softmax: false
+use_softmax: true

@@ -233,6 +233,7 @@ def visualize_boxes_and_labels_on_image_array(
     skip_labels=False,
     mask_alpha=0.4,
     plot_color=None,
+    conf_threshold = 0.7
 ):
     """Overlay labeled boxes on an image with formatted scores and label names.
 
@@ -299,6 +300,8 @@ def visualize_boxes_and_labels_on_image_array(
                     display_str = str(class_name)
                     
                 if not skip_scores:
+                  if np.max(scores_all[indices_fg[i]]) < conf_threshold:
+                    continue
                   float_score = ("%.2f" % float(np.max(scores_all[indices_fg[i]])*100))
                   display_str = '{}: {}%'.format(display_str, float_score)
                   box_to_score_map[box] = int(100*scores[i])
