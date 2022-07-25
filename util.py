@@ -323,20 +323,20 @@ def visualize_boxes_and_labels_on_image_array(
     for box_color, tmpUser in zip(box_color_iter, user):
         box, color = box_color
         ymin, xmin, ymax, xmax = box
-        if instance_masks is not None:
-            draw_mask_on_image_array(
-                image,
-                box_to_instance_masks_map[box],
-                color=color,
-                alpha=mask_alpha
-            )
-        if instance_boundaries is not None:
-            draw_mask_on_image_array(
-                image,
-                box_to_instance_boundaries_map[box],
-                color='red',
-                alpha=1.0
-            )
+        #//if instance_masks is not None:
+        #//    draw_mask_on_image_array(
+        #//        image,
+        #//        box_to_instance_masks_map[box],
+        #//        color=color,
+        #//        alpha=mask_alpha
+        #//    )
+        #//if instance_boundaries is not None:
+        #//    draw_mask_on_image_array(
+        #//        image,
+        #//        box_to_instance_boundaries_map[box],
+        #//        color='red',
+        #//        alpha=1.0
+        #//    )
         draw_bounding_box_on_image_array(
             image,
             ymin,
