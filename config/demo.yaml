@@ -1,6 +1,6 @@
-image_path: /Users/gsq/Desktop/Other Photo/Xnip2022-03-10_09-57-42.jpg
+image_path: ./examples/test.jpg
 label_path: ./label_test.txt
-max_boxes_to_draw: 20
+max_boxes_to_draw: 7
 min_box_area: 0
 min_rpn_score_thresh: 0.9
 nms_threshold: 0.5
