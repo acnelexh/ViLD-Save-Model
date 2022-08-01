@@ -35,10 +35,15 @@ single_template = text_encoder.single_template
 multiple_templates = text_encoder.multiple_templates
 
 max_boxes_to_draw = 25
-nms_threshold = 0.1
+nms_threshold = 0.3
 min_rpn_score_thresh = 0.9
+<<<<<<< HEAD
 min_box_area = 200
 conf_threshold = 0.7
+=======
+min_box_area = 500
+conf_threshold = 0.6
+>>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
 
 clip.available_models()
 model, preprocess = clip.load("ViT-B/32")
@@ -125,22 +130,36 @@ def inference(image_path, category_names, text_features):
       scores_all = softmax(FLAGS.temperature * raw_scores, axis=-1)
     else:
       scores_all = raw_scores
+    
+    '''
+    #################################################################
+    # Filter out wheels
+    wheel_filter = np.argmax(scores_all, axis=1) != 9
+    scores_all = scores_all[wheel_filter]
+    detection_boxes = detection_boxes[wheel_filter]
+    detection_masks = detection_masks[wheel_filter]
+    detection_visual_feat = detection_visual_feat[wheel_filter]
+    rescaled_detection_boxes = rescaled_detection_boxes[wheel_filter]
 
+    # Filter out ladder
+    ladder_filter = np.argmax(scores_all, axis=1) != 10
+    scores_all = scores_all[ladder_filter]
+    detection_boxes = detection_boxes[ladder_filter]
+    detection_masks = detection_masks[ladder_filter]
+    detection_visual_feat = detection_visual_feat[ladder_filter]
+    rescaled_detection_boxes = rescaled_detection_boxes[ladder_filter]
+    '''
+    #################################################################
+    # Plot detected boxes on the input image.
     indices = np.argsort(-np.max(scores_all, axis=1))  # Results are ranked by scores
     indices_fg = np.array([i for i in indices if np.argmax(scores_all[i]) != 0])
 
-
-    #################################################################
-    # Plot detected boxes on the input image.
     ymin, xmin, ymax, xmax = np.split(rescaled_detection_boxes, 4, axis=-1)
-
-
     ######################################
     # MY OWN CODE WILL GO HERE
     img = cv2.imread(image_path,  cv2.COLOR_BGR2RGB)
     if len(indices_fg) == 0:
       print('ViLD does not detect anything belong to the given category')
-
     else:
       boxes = rescaled_detection_boxes[indices_fg]
       probs = detection_roi_scores[indices_fg]
@@ -155,7 +174,10 @@ def inference(image_path, category_names, text_features):
           continue
 
         if(np.max(scores) < conf_threshold):
+<<<<<<< HEAD
           #print(category_names[class_id], " ", prob, " ", np.max(scores))
+=======
+>>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
           continue
 
         ymin, xmin, ymax, xmax = box
@@ -168,13 +190,14 @@ def inference(image_path, category_names, text_features):
         #print(category_names[class_id], " ", prob, " ", np.max(scores))
 
         cv2.rectangle(img, start_point, end_point, color, thickness)
-        cv2.putText(img, category_names[class_id], (int(xmin), int(ymin)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
+        display_label = category_names[class_id] + " " + str(np.max(scores))[:4]
+        cv2.putText(img, display_label, (int(xmin), int(ymin)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
 
 
     return img, image_height, image_width
 
-def main(scene = 'scene_04', test_mode = False, additional_labels = []):
-  image_dir = os.path.join('/datasets/kitti/scenes/', scene)
+def main(scene = 'scene_04', test_mode = False, additional_labels = [], save_name = "test.avi"):
+  image_dir = os.path.join('./datasets/BDD/scenes/', scene)
   img_list = [os.path.join(image_dir, f) for f in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, f))]
   img_list.sort()
 
@@ -197,7 +220,11 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = []):
       video_array.append(adapted_img)
       size = (width, height)
 
+<<<<<<< HEAD
     out = cv2.VideoWriter('test.mp4',cv2.VideoWriter_fourcc(*'mp4v'), 10, size)
+=======
+    out = cv2.VideoWriter(f'{save_name}',cv2.VideoWriter_fourcc(*'DIVX'), 10, size)
+>>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
 
     for i in range(len(video_array)):
         out.write(video_array[i])
@@ -209,7 +236,55 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = []):
     cv2.imwrite("test.png", result)
 
 if __name__ == "__main__":
+  scene = 'scene_01'
+  additional_labels = []
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_01_BDD.avi")
+
+  scene = 'scene_01'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_01_BDD_new.avi")
+
+  scene = 'scene_02'
+  additional_labels = []
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_02_BDD.avi")
+
+  scene = 'scene_02'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_02_BDD_new.avi")
+
+  scene = 'scene_03'
+  additional_labels = []
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_03_BDD.avi")
+
+  scene = 'scene_03'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_03_BDD_new.avi")
+
   scene = 'scene_04'
   additional_labels = []
+<<<<<<< HEAD
   additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate', 'Mini Van']
   main(scene, test_mode = False, additional_labels = additional_labels)
+=======
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_04_BDD.avi")
+
+  scene = 'scene_04'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_04_BDD_new.avi")
+  
+  scene = 'scene_05'
+  additional_labels = []
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_05_BDD.avi")
+
+  scene = 'scene_05'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_05_BDD_new.avi")
+
+  scene = 'scene_06'
+  additional_labels = []
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_06_BDD.avi")
+
+  scene = 'scene_06'
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_06_BDD_new.avi")
+>>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef

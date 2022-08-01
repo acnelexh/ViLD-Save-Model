@@ -8,5 +8,6 @@ tmp/
 *.png
 result/*
 result_new/
+coco_result/
 *.avi
-*.mp4
+datasets/
