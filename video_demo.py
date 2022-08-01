@@ -37,13 +37,9 @@ multiple_templates = text_encoder.multiple_templates
 max_boxes_to_draw = 25
 nms_threshold = 0.3
 min_rpn_score_thresh = 0.9
-<<<<<<< HEAD
 min_box_area = 200
 conf_threshold = 0.7
-=======
-min_box_area = 500
-conf_threshold = 0.6
->>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
+
 
 clip.available_models()
 model, preprocess = clip.load("ViT-B/32")
