@@ -174,10 +174,6 @@ def inference(image_path, category_names, text_features):
           continue
 
         if(np.max(scores) < conf_threshold):
-<<<<<<< HEAD
-          #print(category_names[class_id], " ", prob, " ", np.max(scores))
-=======
->>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
           continue
 
         ymin, xmin, ymax, xmax = box
@@ -220,11 +216,9 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = [], save_nam
       video_array.append(adapted_img)
       size = (width, height)
 
-<<<<<<< HEAD
-    out = cv2.VideoWriter('test.mp4',cv2.VideoWriter_fourcc(*'mp4v'), 10, size)
-=======
-    out = cv2.VideoWriter(f'{save_name}',cv2.VideoWriter_fourcc(*'DIVX'), 10, size)
->>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
+
+    out = cv2.VideoWriter(save_name,cv2.VideoWriter_fourcc(*'mp4v'), 10, size)
+
 
     for i in range(len(video_array)):
         out.write(video_array[i])
@@ -236,55 +230,10 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = [], save_nam
     cv2.imwrite("test.png", result)
 
 if __name__ == "__main__":
-  scene = 'scene_01'
-  additional_labels = []
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_01_BDD.avi")
-
-  scene = 'scene_01'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_01_BDD_new.avi")
-
-  scene = 'scene_02'
-  additional_labels = []
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_02_BDD.avi")
-
-  scene = 'scene_02'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_02_BDD_new.avi")
-
   scene = 'scene_03'
   additional_labels = []
   main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_03_BDD.avi")
 
-  scene = 'scene_03'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_03_BDD_new.avi")
 
-  scene = 'scene_04'
-  additional_labels = []
-<<<<<<< HEAD
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate', 'Mini Van']
-  main(scene, test_mode = False, additional_labels = additional_labels)
-=======
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_04_BDD.avi")
 
-  scene = 'scene_04'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_04_BDD_new.avi")
-  
-  scene = 'scene_05'
-  additional_labels = []
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_05_BDD.avi")
 
-  scene = 'scene_05'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_05_BDD_new.avi")
-
-  scene = 'scene_06'
-  additional_labels = []
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_06_BDD.avi")
-
-  scene = 'scene_06'
-  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
-  main(scene, test_mode = False, additional_labels = additional_labels, save_name = "scene_06_BDD_new.avi")
->>>>>>> 9f74def5d3ef16b7719c26fd24c04080008bccef
