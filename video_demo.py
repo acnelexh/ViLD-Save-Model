@@ -37,8 +37,8 @@ multiple_templates = text_encoder.multiple_templates
 max_boxes_to_draw = 25
 nms_threshold = 0.1
 min_rpn_score_thresh = 0.9
-min_box_area = 50
-conf_threshold = 0.4
+min_box_area = 200
+conf_threshold = 0.7
 
 clip.available_models()
 model, preprocess = clip.load("ViT-B/32")
@@ -154,7 +154,8 @@ def inference(image_path, category_names, text_features):
         if np.argmax(scores) == 0:
           continue
 
-        if(np.max(scores) < 0.9):
+        if(np.max(scores) < conf_threshold):
+          #print(category_names[class_id], " ", prob, " ", np.max(scores))
           continue
 
         ymin, xmin, ymax, xmax = box
@@ -196,7 +197,7 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = []):
       video_array.append(adapted_img)
       size = (width, height)
 
-    out = cv2.VideoWriter('test.avi',cv2.VideoWriter_fourcc(*'DIVX'), 10, size)
+    out = cv2.VideoWriter('test.mp4',cv2.VideoWriter_fourcc(*'mp4v'), 10, size)
 
     for i in range(len(video_array)):
         out.write(video_array[i])
@@ -210,5 +211,5 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = []):
 if __name__ == "__main__":
   scene = 'scene_04'
   additional_labels = []
-  #additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate']
+  additional_labels = ['Traffic Light', 'Traffic Sign', 'Road Light', 'Lane Markings', 'Licences Plate', 'Mini Van']
   main(scene, test_mode = False, additional_labels = additional_labels)
