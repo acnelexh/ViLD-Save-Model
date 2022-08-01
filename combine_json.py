@@ -15,19 +15,20 @@ def combine(json_path, out_path):
                 if score < 0.5:
                     continue
                 #pdb.set_trace()
-                x1,y1,x2,y2 = detection['bbox']
-                x = (x1+x2)/2
-                y = (y1+y2)/2
-                width = x2-x1
-                height = y2-y1
+                #x1,y1,x2,y2 = detection['bbox']
+                #x = (x1+x2)/2
+                #y = (y1+y2)/2
+                #width = x2-x1
+                #height = y2-y1
                 modified_dict = {
                     'image_id': detection['image_id'],
-                    'category_id': detection['score'],
-                    'bbox': [x, y, width, height],
+                    'category_id': detection['category_id'], #detection['score'],
+                    'bbox': detection['bbox'], #[x, y, width, height],
                     'score': score
                 }
                 result.append(modified_dict)
-    pdb.set_trace()
+                
+    #!pdb.set_trace()
     with open(out_path, 'w') as outfile:
         json_object = json.dumps(result, indent = 2)
         outfile.write(json_object)
@@ -39,5 +40,5 @@ def check_result(out_path):
     print(len(result))
 
 
-combine(Path("result_new"), Path("./result_new.json"))
+combine(Path("result_new"), Path("./results/result_new.json"))
 #check_result(Path("./result_new.json"))
