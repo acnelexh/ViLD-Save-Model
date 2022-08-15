@@ -12,3 +12,5 @@ coco_result/
 *.avi
 datasets/
 *.mp4
+mapping/
+matlab/
