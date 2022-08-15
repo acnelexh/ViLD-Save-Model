@@ -267,84 +267,7 @@ inline double imageBoxOverlap(tDetection a, tGroundtruth b, int32_t criterion=-1
   return imageBoxOverlap(a.box, b.box, criterion);
 }
 
-// compute polygon of an oriented bounding box
-template <typename T>
-Polygon toPolygon(const T& g) {
-    using namespace boost::numeric::ublas;
-    using namespace boost::geometry;
-    matrix<double> mref(2, 2);
-    mref(0, 0) = cos(g.ry); mref(0, 1) = sin(g.ry);
-    mref(1, 0) = -sin(g.ry); mref(1, 1) = cos(g.ry);
 
-    static int count = 0;
-    matrix<double> corners(2, 4);
-    double data[] = {g.l / 2, g.l / 2, -g.l / 2, -g.l / 2,
-                     g.w / 2, -g.w / 2, -g.w / 2, g.w / 2};
-    std::copy(data, data + 8, corners.data().begin());
-    matrix<double> gc = prod(mref, corners);
-    for (int i = 0; i < 4; ++i) {
-        gc(0, i) += g.t1;
-        gc(1, i) += g.t3;
-    }
-
-    double points[][2] = {{gc(0, 0), gc(1, 0)},{gc(0, 1), gc(1, 1)},{gc(0, 2), gc(1, 2)},{gc(0, 3), gc(1, 3)},{gc(0, 0), gc(1, 0)}};
-    Polygon poly;
-    append(poly, points);
-    return poly;
-}
-
-// measure overlap between bird's eye view bounding boxes, parametrized by (ry, l, w, tx, tz)
-inline double groundBoxOverlap(tDetection d, tGroundtruth g, int32_t criterion = -1) {
-    using namespace boost::geometry;
-    Polygon gp = toPolygon(g);
-    Polygon dp = toPolygon(d);
-
-    std::vector<Polygon> in, un;
-    intersection(gp, dp, in);
-    union_(gp, dp, un);
-
-    double inter_area = in.empty() ? 0 : area(in.front());
-    double union_area = area(un.front());
-    double o;
-    if(criterion==-1)     // union
-        o = inter_area / union_area;
-    else if(criterion==0) // bbox_a
-        o = inter_area / area(dp);
-    else if(criterion==1) // bbox_b
-        o = inter_area / area(gp);
-
-    return o;
-}
-
-// measure overlap between 3D bounding boxes, parametrized by (ry, h, w, l, tx, ty, tz)
-inline double box3DOverlap(tDetection d, tGroundtruth g, int32_t criterion = -1) {
-    using namespace boost::geometry;
-    Polygon gp = toPolygon(g);
-    Polygon dp = toPolygon(d);
-
-    std::vector<Polygon> in, un;
-    intersection(gp, dp, in);
-    union_(gp, dp, un);
-
-    double ymax = min(d.t2, g.t2);
-    double ymin = max(d.t2 - d.h, g.t2 - g.h);
-
-    double inter_area = in.empty() ? 0 : area(in.front());
-    double inter_vol = inter_area * max(0.0, ymax - ymin);
-
-    double det_vol = d.h * d.l * d.w;
-    double gt_vol = g.h * g.l * g.w;
-
-    double o;
-    if(criterion==-1)     // union
-        o = inter_vol / (det_vol + gt_vol - inter_vol);
-    else if(criterion==0) // bbox_a
-        o = inter_vol / det_vol;
-    else if(criterion==1) // bbox_b
-        o = inter_vol / gt_vol;
-
-    return o;
-}
 
 vector<double> getThresholds(vector<double> &v, double n_groundtruth){
 
@@ -846,49 +769,6 @@ bool eval(string result_sha,Mail* mail){
         saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_orientation", CLASS_NAMES[c], aos, 1);
         fclose(fp_ori);
       }
-      mail->msg("  done.");
-    }
-  }
-
-  // don't evaluate AOS for birdview boxes and 3D boxes
-  compute_aos = false;
-
-  // eval bird's eye view bounding boxes
-  for (int c = 0; c < NUM_CLASS; c++) {
-    CLASSES cls = (CLASSES)c;
-    //mail->msg("Checking bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
-    if (eval_ground[c]) {
-      mail->msg("Starting bird's eye evaluation (%s) ...", CLASS_NAMES[c].c_str());
-      fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_ground.txt").c_str(), "w");
-      vector<double> precision[3], aos[3];
-      if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[0], aos[0], EASY, GROUND)
-         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[1], aos[1], MODERATE, GROUND)
-         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, groundBoxOverlap, precision[2], aos[2], HARD, GROUND)) {
-        mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
-        return false;
-      }
-      fclose(fp_det);
-      saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_ground", CLASS_NAMES[c], precision, 0);
-      mail->msg("  done.");
-    }
-  }
-
-  // eval 3D bounding boxes
-  for (int c = 0; c < NUM_CLASS; c++) {
-    CLASSES cls = (CLASSES)c;
-    //mail->msg("Checking 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
-    if (eval_3d[c]) {
-      mail->msg("Starting 3D evaluation (%s) ...", CLASS_NAMES[c].c_str());
-      fp_det = fopen((result_dir + "/stats_" + CLASS_NAMES[c] + "_detection_3d.txt").c_str(), "w");
-      vector<double> precision[3], aos[3];
-      if(   !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[0], aos[0], EASY, BOX3D)
-         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[1], aos[1], MODERATE, BOX3D)
-         || !eval_class(fp_det, fp_ori, cls, groundtruth, detections, compute_aos, box3DOverlap, precision[2], aos[2], HARD, BOX3D)) {
-        mail->msg("%s evaluation failed.", CLASS_NAMES[c].c_str());
-        return false;
-      }
-      fclose(fp_det);
-      saveAndPlotPlots(plot_dir, CLASS_NAMES[c] + "_detection_3d", CLASS_NAMES[c], precision, 0);
       mail->msg("  done.");
     }
   }
