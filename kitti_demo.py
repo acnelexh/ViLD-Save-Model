@@ -6,7 +6,6 @@ import numpy as np
 import torch
 import clip
 import cv2
-import webcolors
 import text_encoder
 import util
 
@@ -41,7 +40,7 @@ multiple_templates = text_encoder.multiple_templates
 max_boxes_to_draw = 25
 nms_threshold = 0.3
 min_rpn_score_thresh = 0.9
-min_box_area = 200
+min_box_area = 100
 conf_threshold = 0.7
 
 
@@ -52,11 +51,6 @@ model, preprocess = clip.load("ViT-B/32")
 session = tf.Session(graph=tf.Graph(), config=tf.ConfigProto(gpu_options=gpu_options))
 saved_model_dir = './save_models' #@param {type:"string"}
 _ = tf.saved_model.loader.load(session, ['serve'], saved_model_dir)
-
-
-def map_cat_to_color(num_categories):
-  color_map = [util.STANDARD_COLORS[(i*i + num_categories) % len(util.STANDARD_COLORS)] for i in range(num_categories)]
-  return [webcolors.name_to_rgb(color) for color in color_map]
 
 def inference(image_path, category_names, text_features):
     #################################################################
@@ -141,13 +135,16 @@ def inference(image_path, category_names, text_features):
     ######################################
     # MY OWN CODE WILL GO HERE
     img = cv2.imread(image_path,  cv2.COLOR_BGR2RGB)
+    bbox = []
+    bprob = []
+    display_labels = []
+
     if len(indices_fg) == 0:
       print('ViLD does not detect anything belong to the given category')
     else:
       boxes = rescaled_detection_boxes[indices_fg]
       probs = detection_roi_scores[indices_fg]
       n_boxes = boxes.shape[0]
-      color_map = map_cat_to_color(len(category_names))
       
       for box, anno_idx, prob in zip(boxes, indices[0:int(n_boxes)], probs):
         
@@ -159,24 +156,39 @@ def inference(image_path, category_names, text_features):
         if(np.max(scores) < conf_threshold):
           continue
 
-        ymin, xmin, ymax, xmax = box
-        start_point = (int(xmin), int(ymin))
-        end_point = (int(xmax), int(ymax))
-        thickness = 2
+        bbox.append(box)
+        bprob.append(str(np.max(scores))[:4])
+        #ymin, xmin, ymax, xmax = box
+
         class_id = np.argmax(scores)
-        color = color_map[class_id]
-
-        #print(category_names[class_id], " ", prob, " ", np.max(scores))
-
-        cv2.rectangle(img, start_point, end_point, color, thickness)
-        display_label = category_names[class_id] + " " + str(np.max(scores))[:4]
-        cv2.putText(img, display_label, (int(xmin), int(ymin)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
 
 
-    return img, image_height, image_width
+        display_labels.append(category_names[class_id])
 
-def main(scene = 'scene_04', test_mode = False, additional_labels = [], save_name = "test.avi"):
-  image_dir = os.path.join('./datasets/BDD/scenes/', scene)
+
+
+    return img, display_labels, bbox, bprob
+
+def write_result(cat, bbox, prob):
+  return f"{cat} 0.00 0 0 {bbox[1]} {bbox[0]} {bbox[3]} {bbox[2]} 0.0 0.0 0.0 0.0 0.0 0.0 0.0 {prob}"
+
+def write_results(file_name, cats, bboxes, probs):
+  f = open(file_name, "w")
+  output_text = ""
+  for cat, bbox, prob in zip(cats, bboxes, probs):
+    output_text += write_result(cat, bbox, prob) + "\n"
+  f.write(output_text)
+  f.close()
+
+
+def output_file_name(image_name):
+  base = os.path.basename(image_name).split('.')[0]
+
+  return base + ".txt"
+
+def main(scene = 'scene_04', additional_labels = []):
+  image_dir = '/datasets/kitti/training/image_2'
+  eval_dir = '/datasets/kitti/evaluations/base/data'
   img_list = [os.path.join(image_dir, f) for f in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, f))]
   img_list.sort()
 
@@ -190,34 +202,19 @@ def main(scene = 'scene_04', test_mode = False, additional_labels = [], save_nam
   # Compute text embeddings and detection scores, and rank results
   text_features = build_text_embedding(categories, model, FLAGS)
 
-  video_array = []
 
-  if test_mode == False:
-    size = ()
-    for image in tqdm(img_list):
-      adapted_img, height, width= inference(image, category_names, text_features)
-      video_array.append(adapted_img)
-      size = (width, height)
-
-
-    out = cv2.VideoWriter(save_name,cv2.VideoWriter_fourcc(*'mp4v'), 10, size)
+  for image in tqdm(img_list):
+    file_name = output_file_name(image)
+    file_name = os.path.join(eval_dir, file_name)
+    _ , display_labels, bboxes, probs = inference(image, category_names, text_features)
+    write_results(file_name, display_labels, bboxes, probs)
+  #cv2.imwrite(file_name + ".png", result)
 
 
-    for i in range(len(video_array)):
-        out.write(video_array[i])
-    out.release()
-
-  else:
-    import random
-    img_id = random.randint(0, len(img_list) - 1)
-    image = img_list[img_id]
-    result, _, _ = inference(image, category_names, text_features)
-    cv2.imwrite("test.png", result)
 
 if __name__ == "__main__":
-  scene = 'scene_03'
   additional_labels = []
-  main(scene, test_mode = True, additional_labels = additional_labels)
+  main(additional_labels = additional_labels)
 
 
 

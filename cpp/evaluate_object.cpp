@@ -31,8 +31,8 @@ STATIC EVALUATION PARAMETERS
 =======================================================================*/
 
 // holds the number of test images on the server
-const int32_t N_TESTIMAGES = 7518;
-//const int32_t N_TESTIMAGES = 7480;
+//const int32_t N_TESTIMAGES = 7518;
+const int32_t N_TESTIMAGES = 7480;
 
 // easy, moderate and hard evaluation level
 enum DIFFICULTY{EASY=0, MODERATE=1, HARD=2};
@@ -698,8 +698,8 @@ bool eval(string result_sha,Mail* mail){
   initGlobals();
 
   // ground truth and result directories
-  string gt_dir         = "data/object/label_2";
-  string result_dir     = "results/" + result_sha;
+  string gt_dir         = "/data/datasets/kitti/training/label_2";
+  string result_dir     = "/data/datasets/kitti/evaluations/" + result_sha;
   string plot_dir       = result_dir + "/plot";
 
   // create output directories
